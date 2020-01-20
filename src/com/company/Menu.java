@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 public class Menu {
 
+    Scanner scanner = new Scanner(System.in);
+
     public void chooseUserMenu() {
         System.out.println("Please Choose from below: \n 1. I am a user. \n 2. I am a librarian.\n 3. exit.");
         while (true) {
@@ -35,6 +37,10 @@ public class Menu {
     }
 
     private void userLogIn() {
+        System.out.println("Please input your name: ");
+        String userName = scanner.nextLine();
+
+
     }
 
     }
