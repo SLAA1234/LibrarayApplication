@@ -12,12 +12,15 @@ public class BookList implements Serializable {
     Book book;
     //private List<Book> remainBookList = new ArrayList<>();
     //private Book book = new Book();
+
     transient Scanner scanner;
     long serialVersionUID = 1;
 
     BookList() {
         scanner = new Scanner(System.in);
     }
+
+
 
     public void setTotalBookObject() {// when want to create File outside project, want to read or easy modify,
         //create txt, like Readme. When wants to save object, InputStream or OutputStream, create ser
@@ -94,7 +97,7 @@ public class BookList implements Serializable {
     public void addLoan(){
         if(isBookAvailable()){
             borrowerLoanList.add(book);//has problem here
-            System.out.println("The book has been successfully added to your cart.");
+            System.out.println("The book " + book.getTitle().toUpperCase() + " has been successfully added to your loan list.");
             showBorrowerLoan();
            // totalLoanList.add(book);
             totalBookList.remove(book);
@@ -108,14 +111,23 @@ public class BookList implements Serializable {
     public void returnLoan(){
         System.out.println("Input the title of the book you want to return: ");
         String bookToSearchFor = scanner.nextLine();
+        List<Book>bookToReturn = new ArrayList<>();
+        boolean didBorrowTheBook = false;
+
         for(Book book: borrowerLoanList){
             if(bookToSearchFor.equals(book.getTitle())){
-                borrowerLoanList.remove(book);
-                //totalLoanList.remove(book);
-                totalBookList.add(book);
+                bookToReturn.add(book);
+                didBorrowTheBook=true;
+                //borrowerLoanList.remove(book);//forloop can't add or remove, for it will change the loop, so this doesn't work
+                System.out.println("The book " + bookToSearchFor.toUpperCase() + " has been successfully remove from your loan List.");
             }
         }
-        System.out.println("The borrower doesn't borrow this book.");
+        borrowerLoanList.removeAll(bookToReturn);
+
+        if(didBorrowTheBook==false){
+            System.out.println("The borrower doesn't borrow this book with title " + bookToSearchFor.toUpperCase() + ". So you can not return this book.");
+        }
+        showBorrowerLoan();
     }
 
     public void showBorrowerLoan(){

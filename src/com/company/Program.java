@@ -31,7 +31,7 @@ public class Program {
                     "\n 2.Search a book by title. \n 3.Search a book by author." +
                     "\n 4.Check if a book is available.\n 5.Borrow a book. \n 6.Return a book." +
                     "\n 7.Show all my loan.\n 8.Exit.");
-            int choice = 999;
+            int choice=0;
 
             try {
                 choice = Integer.parseInt(scanner.nextLine());
