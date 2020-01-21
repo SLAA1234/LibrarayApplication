@@ -20,8 +20,6 @@ public class BookList implements Serializable {
         scanner = new Scanner(System.in);
     }
 
-
-
     public void setTotalBookObject() {// when want to create File outside project, want to read or easy modify,
         //create txt, like Readme. When wants to save object, InputStream or OutputStream, create ser
         totalBookList.add(new Book("Where the Crawdads Sing", "Delia Owens", " A murder mystery"));
@@ -108,7 +106,7 @@ public class BookList implements Serializable {
 
     }
 
-    public void returnLoan(){
+    public void returnLoan(){// when return all books, sth strange shows. need to fix
         System.out.println("Input the title of the book you want to return: ");
         String bookToSearchFor = scanner.nextLine();
         List<Book>bookToReturn = new ArrayList<>();

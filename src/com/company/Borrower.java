@@ -9,7 +9,6 @@ public class Borrower implements Serializable {
     private String name;
 
 
-
     public Borrower(String name) {
         this.name = name;
 

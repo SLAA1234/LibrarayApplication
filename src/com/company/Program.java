@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Program {
@@ -11,21 +12,29 @@ public class Program {
     BookList bookList = new BookList();
     private ArrayList<Borrower> borrowers = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
+    BorrowerList borrowerList = new BorrowerList();
 
     public void start() {
+
         if (Files.exists(Paths.get("TotalBook.ser"))) {
             bookList = (BookList) FileUtility.loadObject("TotalBook.ser");
             bookList.scanner = new Scanner(System.in);
         } else {
-            bookList.setTotalBookObject();
+            bookList.setTotalBookObject();// set but not load here?
         }
 
-        Borrower borrower1 = new Borrower("Alex");
-        Borrower borrower2 = new Borrower("Allen");
-        Borrower borrower3 = new Borrower("Alice");
-        borrowers.add(borrower1);
-        borrowers.add(borrower2);
-        borrowers.add(borrower3);
+
+
+        //FileUtility.loadObject("TotalBook.ser"); should add this line?
+
+        if (Files.exists(Paths.get("BorrowerList.ser"))) {
+            borrowerList = (BorrowerList)FileUtility.loadObject("BorrowerList.ser");
+        } else {
+            borrowerList.setBorrowerListObject();
+        }
+        //FileUtility.loadObject("BorrowerList.ser"); Maybe load when use it
+
+
         while (true) {
             System.out.println("Select the menu:  \n 1.Show all the books." +
                     "\n 2.Search a book by title. \n 3.Search a book by author." +
