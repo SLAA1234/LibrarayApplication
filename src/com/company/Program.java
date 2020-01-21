@@ -39,7 +39,8 @@ public class Program {
             System.out.println("Select the menu:  \n 1.Show all the books." +
                     "\n 2.Search a book by title. \n 3.Search a book by author." +
                     "\n 4.Check if a book is available.\n 5.Borrow a book. \n 6.Return a book." +
-                    "\n 7.Show all my loan.\n 8.Exit.");
+                    "\n 7.Show all my loan.\n 8. Show all the books that lent out."+
+                    "\n 9. Show all the books available to borrow. \n 10.Exit.");
             int choice=0;
 
             try {
@@ -72,6 +73,12 @@ public class Program {
                     bookList.showBorrowerLoan();
                     break;
                 case 8:
+                    bookList.showTotalLoanList();
+                    break;
+                case 9:
+                    bookList.showRemainBookList();
+                    break;
+                case 10:
                     System.exit(0);
             }
         }

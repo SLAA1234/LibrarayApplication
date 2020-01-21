@@ -9,8 +9,8 @@ public class BookList implements Serializable {
     private List<Book> totalBookList = new ArrayList<>();//List to save space when run, can create new ArrayList
     private List<Book> totalLoanList = new ArrayList<>();
     private List<Book> borrowerLoanList = new ArrayList<>();
+    private List<Book> remainBookList = new ArrayList<>();
     Book book;
-    //private List<Book> remainBookList = new ArrayList<>();
     //private Book book = new Book();
 
     transient Scanner scanner;
@@ -27,14 +27,18 @@ public class BookList implements Serializable {
         totalBookList.add(new Book("Educated", "Tara Westover", "A coming-of-age Memoir"));
         totalBookList.add(new Book("Dog Man", "Pilkey Dav", "Action-oriented cartoons."));
         totalBookList.add(new Book("Girl, Wash your Face", "Rachel Hollis", "An Encouraging book for girls"));
+        remainBookList.add(new Book("Where the Crawdads Sing", "Delia Owens", " A murder mystery"));
+        remainBookList.add(new Book("Becoming", "Michelle Obama", " An intimate, powerful, and inspiring memoir "));
+        remainBookList.add(new Book("Educated", "Tara Westover", "A coming-of-age Memoir"));
+        remainBookList.add(new Book("Dog Man", "Pilkey Dav", "Action-oriented cartoons."));
+        remainBookList.add(new Book("Girl, Wash your Face", "Rachel Hollis", "An Encouraging book for girls"));
+
         FileUtility.saveObject("TotalBook.ser", this);
     }
 
-
-
     public void showTotalBookList(){
         for(Book book: totalBookList){
-            System.out.println(book);
+            System.out.println("Catalogue\n" + book);
         }
     }
 
@@ -74,7 +78,7 @@ public class BookList implements Serializable {
     public boolean isBookAvailable() {
         System.out.println("Please input the title: ");
         String titleToSearch = scanner.nextLine();
-        for (Book book : totalBookList) {
+        for (Book book : remainBookList) {
             if (titleToSearch.equals(book.getTitle())) {
                 this.book = book;
                 return true;
@@ -97,8 +101,8 @@ public class BookList implements Serializable {
             borrowerLoanList.add(book);//has problem here
             System.out.println("The book " + book.getTitle().toUpperCase() + " has been successfully added to your loan list.");
             showBorrowerLoan();
-           // totalLoanList.add(book);
-            totalBookList.remove(book);
+            totalLoanList.add(book);
+            remainBookList.remove(book);
 
         }else {//specify the reason. Is the book not in the library or there is no such a book
             System.out.println("Failed to borrow the book.");
@@ -121,6 +125,9 @@ public class BookList implements Serializable {
             }
         }
         borrowerLoanList.removeAll(bookToReturn);
+        totalLoanList.removeAll(bookToReturn);
+        remainBookList.addAll(bookToReturn);
+
 
         if(didBorrowTheBook==false){
             System.out.println("The borrower doesn't borrow this book with title " + bookToSearchFor.toUpperCase() + ". So you can not return this book.");
@@ -134,7 +141,17 @@ public class BookList implements Serializable {
         }
     }
 
+    public void showTotalLoanList(){
+        for(Book book: totalLoanList){
+            System.out.println("Now these books are lent out: \n"+ book);
+        }
+    }
 
+    public void showRemainBookList(){
+        for(Book book: remainBookList){
+            System.out.println("Now these books are available to borrow: \n"+ book);
+        }
+    }
 
 
 /*
