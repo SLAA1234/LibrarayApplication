@@ -1,12 +1,10 @@
 package com.company;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-public class BookList implements Serializable {
-    private List<Book> totalBookList = new ArrayList<>();//List to save space when run, can create new ArrayList
+public class BookAndBorrowerList implements Serializable {
+    private ArrayList<Book> totalBookList = new ArrayList<>();//List to save space when run, can create new ArrayList
     private List<Book> totalLoanList = new ArrayList<>();
     private List<Book> borrowerLoanList = new ArrayList<>();
     private List<Book> remainBookList = new ArrayList<>();
@@ -17,7 +15,7 @@ public class BookList implements Serializable {
     transient Scanner scanner;
     long serialVersionUID = 1;
 
-    BookList() {
+    BookAndBorrowerList() {
         scanner = new Scanner(System.in);
     }
 
@@ -40,11 +38,53 @@ public class BookList implements Serializable {
     }
 
 
-    public void showTotalBookList(){
-        for(Book book: totalBookList){
-            System.out.println("Catalogue\n" + book);
+    public void showTotalBookList() {
+        System.out.println("Select from the menu: \n 1.Show all the books in random order. \n 2.Show books according to name order." +
+                "\n 3.Show books according to title order.");
+        int choice = 999;
+        try {
+            choice = Integer.parseInt((scanner.nextLine()));
+        } catch (Exception e) {
+            System.out.println("You must select a number.");
+        }
+        switch (choice) {
+            case 1:
+                showBooksRandomly();
+                break;
+            case 2:
+                showBooksByAuthor();
+                break;
+            case 3:
+                showBooksByTitle();
+                break;
         }
     }
+
+    private void showBooksRandomly(){
+        System.out.println("Catalogue\n");
+
+        for(Book book: totalBookList){
+            System.out.println(book);
+        }
+    }
+
+    private void showBooksByAuthor(){
+        System.out.println("Catalogue By Author\n");
+        totalBookList.sort(Comparator.comparing(Book::getAuthor));
+        for(Book book: totalBookList){
+            System.out.println(book);
+        }
+    }
+
+    private void showBooksByTitle(){
+        System.out.println("Catalogue By Title\n");
+        totalBookList.sort(Comparator.comparing(Book::getTitle));
+        for(Book book: totalBookList){
+            System.out.println(book);
+        }
+    }
+
+
 
     public void searchBookByTitle() {
         System.out.println("Please input the title: ");
@@ -148,10 +188,10 @@ public class BookList implements Serializable {
                 bookToReturn.add(book);
                 didBorrowTheBook=true;
                 //borrowerLoanList.remove(book);//forloop can't add or remove, for it will change the loop, so this doesn't work
-                System.out.println("The book " + bookToSearchFor.toUpperCase() + " has been successfully remove from your loan List.");
             }
         }
         borrowerLoanList.removeAll(bookToReturn);
+        System.out.println("The book " + bookToSearchFor.toUpperCase() + " has been successfully remove from your loan List.");
         totalLoanList.removeAll(bookToReturn);
         remainBookList.addAll(bookToReturn);
 
@@ -175,9 +215,172 @@ public class BookList implements Serializable {
     }
 
     public void showRemainBookList(){
-        for(Book book: remainBookList){
-            System.out.println("Now these books are available to borrow: \n"+ book);
+        System.out.println("Select from the menu: \n 1.Show available books in random order. \n 2.Show available books according to name order." +
+                "\n 3.Show available books according to title order.");
+        int choice = 999;
+        try {
+            choice = Integer.parseInt((scanner.nextLine()));
+        } catch (Exception e) {
+            System.out.println("You must select a number.");
         }
+        switch (choice) {
+            case 1:
+                showAvailableBooksRandomly();
+                break;
+            case 2:
+                showAvailableBooksByAuthor();
+                break;
+            case 3:
+                showAvailableBooksByTitle();
+                break;
+        }
+    }
+
+    private void showAvailableBooksRandomly(){
+        System.out.println("Available Books Catalogue\n");
+
+        for(Book book: remainBookList){
+            System.out.println(book);
+        }
+    }
+
+    private void showAvailableBooksByAuthor(){
+        System.out.println("Available Books Catalogue By Author\n");
+        remainBookList.sort(Comparator.comparing(Book::getAuthor));
+        for(Book book: remainBookList){
+            System.out.println(book);
+        }
+    }
+
+    private void showAvailableBooksByTitle(){
+        System.out.println("Available Books Catalogue By Title\n");
+        remainBookList.sort(Comparator.comparing(Book::getTitle));
+        for(Book book: remainBookList){
+            System.out.println(book);
+        }
+        System.out.println("Now these books are available to borrow: \n");
+        for(Book book: remainBookList){
+            System.out.println(book);
+        }
+    }
+
+    public void daysToDueDate() {
+    }
+
+    public void addBookToTotalBookList() {
+        System.out.println("Please enter the author of the new book: ");
+        String author = scanner.nextLine();
+        System.out.println("Please enter the title of the new book: ");
+        String title = scanner.nextLine();
+        System.out.println("Please enter the description of the new book: ");
+        String description =  scanner.nextLine();
+        totalBookList.add(new Book(title, author, description));
+        System.out.println("The book" + title.toUpperCase()+ " has been successfully added to the total book list.");
+    }
+
+    public void removeBookFromTotalBookList() {
+        System.out.println("Select from Menu: \n 1.Remove by author. \n 2.Remove by title.");
+        int choice = 999;
+        try {
+            choice = Integer.parseInt((scanner.nextLine()));
+        } catch (Exception e) {
+            System.out.println("You must select a number.");
+        }
+        switch (choice) {
+            case 1:
+                removeByAuthor();
+                break;
+            case 2:
+                removeByTitle();
+                break;
+        }
+    }
+
+    private void removeByAuthor() {
+        System.out.println("Please enter the author of the book you want to remove: ");
+        String author = scanner.nextLine();
+        List<Book>bookToRemove = new ArrayList<>();
+        boolean didExitTheBook = false;
+
+        for(Book book: totalBookList){
+            if(author.equals(book.getAuthor())){
+                bookToRemove.add(book);
+                didExitTheBook=true;
+            }
+        }
+        totalBookList.removeAll(bookToRemove);
+        System.out.println("The book with author " + author.toUpperCase() + " has been successfully remove from total book List.");
+        remainBookList.removeAll(bookToRemove);
+
+
+        if(didExitTheBook==false){
+            System.out.println("The book with author " + author.toUpperCase() + " doesn't exit. So you can not remove this book.");
+        }
+        showBorrowerLoan();
+
+    }
+
+    private void removeByTitle(){
+        System.out.println("Please enter the title of the book you want to remove: ");
+        String title = scanner.nextLine();
+        List<Book>bookToRemove = new ArrayList<>();
+        boolean didExitTheBook = false;
+
+        for(Book book: totalBookList){
+            if(title.equals(book.getTitle())){
+                bookToRemove.add(book);
+                didExitTheBook=true;
+            }
+        }
+        totalBookList.removeAll(bookToRemove);
+        System.out.println("The book " + title.toUpperCase() + " has been successfully remove from total book List.");
+        remainBookList.removeAll(bookToRemove);
+
+
+        if(didExitTheBook==false){
+            System.out.println("The book with title " + title.toUpperCase() + " doesn't exit. So you can not remove this book.");
+        }
+        showBorrowerLoan();
+
+    }
+
+    public void showBorrowerList() {
+        for(Borrower borrower: borrowerList){
+            System.out.println(borrower);
+        }
+    }
+
+    public void searchBorrowerByName() {
+        System.out.println("Please enter the name of the borrower: ");
+        String nameToSearch = scanner.nextLine();
+        boolean didFindBorrower = false;
+
+        for(Borrower borrower: borrowerList){
+            if(nameToSearch.equals(borrower.getName())){
+                System.out.println(borrower);//"There is no book with this author."
+                didFindBorrower = true;
+            }
+        }
+        if(didFindBorrower==false){
+            System.out.println("No borrower with the name.");
+        }
+        
+        
+    }
+
+    public void showBorrowersAndTotalLoan() {
+    }
+
+    public void addBookToBorrowerLoan() {
+    }
+
+    public void removeBookFromBorrowerLoan() {
+    }
+
+    public void setLoanPeriod() {
+    }
+
+    public void sendReminder() {
     }
 
 
