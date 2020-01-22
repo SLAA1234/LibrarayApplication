@@ -11,18 +11,14 @@ public class Borrower implements Serializable {
 
     public Borrower(String name) {
         this.name = name;
-
     }
 
     public String getName() {
         return name;
     }
 
-
-
-
-
-    public void userLogIn(){
-
+    @Override
+    public String toString() {
+        return "Borrower name: " + name + ".";
     }
 }

@@ -10,6 +10,7 @@ public class BookList implements Serializable {
     private List<Book> totalLoanList = new ArrayList<>();
     private List<Book> borrowerLoanList = new ArrayList<>();
     private List<Book> remainBookList = new ArrayList<>();
+    private List<Borrower> borrowerList = new ArrayList<>();
     Book book;
     //private Book book = new Book();
 
@@ -32,9 +33,12 @@ public class BookList implements Serializable {
         remainBookList.add(new Book("Educated", "Tara Westover", "A coming-of-age Memoir"));
         remainBookList.add(new Book("Dog Man", "Pilkey Dav", "Action-oriented cartoons."));
         remainBookList.add(new Book("Girl, Wash your Face", "Rachel Hollis", "An Encouraging book for girls"));
-
+        borrowerList.add(new Borrower("Alex"));
+        borrowerList.add(new Borrower("Allen"));
+        borrowerList.add(new Borrower("Alice"));
         FileUtility.saveObject("TotalBook.ser", this);
     }
+
 
     public void showTotalBookList(){
         for(Book book: totalBookList){
@@ -107,8 +111,31 @@ public class BookList implements Serializable {
         }else {//specify the reason. Is the book not in the library or there is no such a book
             System.out.println("Failed to borrow the book.");
         }
-
     }
+/*
+    public void addLoanToBorrower(){//check all the method, public or private
+        System.out.println("please enter borrower's name");
+        String borrowerName = scanner.nextLine();
+        Borrower borrower = findBorrowerByName(borrowerName);
+        if (borrowerName != null) {
+            addLoan();
+        }
+    }
+
+    private Borrower findBorrowerByName(String nameToSearchFor) {
+        for (Borrower borrower : borrowerList) {
+            if (borrower == null) {
+                continue;
+            }
+            if (nameToSearchFor.equals(borrower.getName())) {
+                return borrower;
+            }
+        }
+        return null;
+    }
+}
+
+ */
 
     public void returnLoan(){// when return all books, sth strange shows. need to fix
         System.out.println("Input the title of the book you want to return: ");

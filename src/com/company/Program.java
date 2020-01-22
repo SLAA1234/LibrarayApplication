@@ -2,46 +2,109 @@ package com.company;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Program {
-    Menu menu = new Menu();
-    BookList bookList = new BookList();
-    private ArrayList<Borrower> borrowers = new ArrayList<>();
+    BookAndBorrowerList bookAndBorrowerList = new BookAndBorrowerList();
     Scanner scanner = new Scanner(System.in);
-    BorrowerList borrowerList = new BorrowerList();
 
     public void start() {
 
         if (Files.exists(Paths.get("TotalBook.ser"))) {
-            bookList = (BookList) FileUtility.loadObject("TotalBook.ser");
-            bookList.scanner = new Scanner(System.in);
+            bookAndBorrowerList = (BookAndBorrowerList) FileUtility.loadObject("TotalBook.ser");
+            bookAndBorrowerList.scanner = new Scanner(System.in);
         } else {
-            bookList.setTotalBookObject();// set but not load here?
+            bookAndBorrowerList.setTotalBookObject();// set but not load here?, set then doesn't load
         }
-
-
-
-        //FileUtility.loadObject("TotalBook.ser"); should add this line?
-
-        if (Files.exists(Paths.get("BorrowerList.ser"))) {
-            borrowerList = (BorrowerList)FileUtility.loadObject("BorrowerList.ser");
-        } else {
-            borrowerList.setBorrowerListObject();
-        }
-        //FileUtility.loadObject("BorrowerList.ser"); Maybe load when use it
 
 
         while (true) {
+            System.out.println("Select the menu: \n 1.I am a borrower. \n 2.I am a librarian.\n 3.Exit.");
+            int choice = 999;
+
+            try {
+                choice = Integer.parseInt((scanner.nextLine()));
+            } catch (Exception e) {
+                System.out.println("You must select a number.");
+            }
+            switch (choice) {
+                case 1:
+                    borrowerChoice();
+                    break;
+                case 2:
+                    librarianChoice();
+                    break;
+                case 3:
+                    System.exit(0);
+
+            }
+        }
+    }
+
+    public void borrowerChoice() {//
+        //add a log in method, so can remember user information. fix this.
+        while (true) {
             System.out.println("Select the menu:  \n 1.Show all the books." +
-                    "\n 2.Search a book by title. \n 3.Search a book by author." +
-                    "\n 4.Check if a book is available.\n 5.Borrow a book. \n 6.Return a book." +
-                    "\n 7.Show all my loan.\n 8. Show all the books that lent out."+
-                    "\n 9. Show all the books available to borrow. \n 10.Exit.");
-            int choice=0;
+                    "\n 2.Show all the books available to borrow" +
+                    "\n 3.Search a book by title. \n 4.Search a book by author." +
+                    "\n 5.Check if a book is available.\n 6.Borrow a book. \n 7.Return a book." +
+                    "\n 8.Show all my loan. \n 9.Show how many days left to due date. \n 10.Exit.");
+            int choice = 999;
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+            } catch (Exception e) {
+                System.out.println("You must select a number.");
+            }
+
+            switch (choice) {
+                case 1:
+                    bookAndBorrowerList.showTotalBookList();
+                    break;
+                case 2:
+                    bookAndBorrowerList.showRemainBookList();
+                    break;
+                case 3:
+                    bookAndBorrowerList.searchBookByTitle();// search once then break, need while true or continue ask to choose
+                    break;
+                case 4:
+                    bookAndBorrowerList.searchBookByAuthor();
+                    break;
+                case 5:
+                    bookAndBorrowerList.checkBookAvailability();
+                    break;
+                case 6:
+                    bookAndBorrowerList.addLoan();
+                    break;
+                case 7:
+                    bookAndBorrowerList.returnLoan();
+                    break;
+                case 8:
+                    bookAndBorrowerList.showBorrowerLoan();
+                    break;
+                case 9:
+                    bookAndBorrowerList.daysToDueDate();
+                    break;
+                case 10:
+                    System.exit(0);
+            }
+        }
+    }
+
+    public void librarianChoice() {
+        while (true) {
+            System.out.println("Select the menu:  \n 1.Show all the books." +
+                    "\n 2.Add a new book to total book list. \n 3.Remove a book from total book list" +
+                    "\n 4.Show all the books available to borrow. \n 5.Check if a book is available." +
+                    "\n 6.Show all the books that lent out. \n 7.Show all the borrowers." +
+                    "\n 8.Search a borrower by name. \n 9.Add a book to a borrower's loan list. " +
+                    "\n 10.Remove a book from a borrower's loan list." +
+                    "\n 11.Show all the books a borrower has lent." +
+                    "\n 12.Show all the borrowers and the books they have borrowed." +
+                    "\n 13.Set length a book can be borrowed." +
+                    "\n 14.Send a reminder to borrower to return book. " +
+                    "\n 15.Exit.");
+            int choice = 999;
 
             try {
                 choice = Integer.parseInt(scanner.nextLine());
@@ -52,44 +115,52 @@ public class Program {
             switch (choice) {
                 case 1:
                     //FileUtility.loadObject("TotalBook.ser");
-                    bookList.showTotalBookList();
+                    bookAndBorrowerList.showTotalBookList();
                     break;
                 case 2:
-                    bookList.searchBookByTitle();// search once then break, need while true or continue ask to choose
+                    bookAndBorrowerList.addBookToTotalBookList();// search once then break, need while true or continue ask to choose
                     break;
                 case 3:
-                    bookList.searchBookByAuthor();
+                    bookAndBorrowerList.removeBookFromTotalBookList();
                     break;
                 case 4:
-                    bookList.checkBookAvailability();
+                    bookAndBorrowerList.showRemainBookList();
                     break;
                 case 5:
-                    bookList.addLoan();
+                    bookAndBorrowerList.checkBookAvailability();
                     break;
                 case 6:
-                    bookList.returnLoan();
+                    bookAndBorrowerList.showTotalLoanList();
                     break;
                 case 7:
-                    bookList.showBorrowerLoan();
+                    bookAndBorrowerList.showBorrowerList();
                     break;
                 case 8:
-                    bookList.showTotalLoanList();
+                    bookAndBorrowerList.searchBorrowerByName();
                     break;
                 case 9:
-                    bookList.showRemainBookList();
+                    bookAndBorrowerList.addBookToBorrowerLoan();
                     break;
                 case 10:
+                    bookAndBorrowerList.removeBookFromBorrowerLoan();
+                    break;
+                case 11:
+                    bookAndBorrowerList.showBorrowerLoan();
+                    break;
+                case 12:
+                    bookAndBorrowerList.showBorrowersAndTotalLoan();
+                    break;
+                case 13:
+                    bookAndBorrowerList.setLoanPeriod();
+                    break;
+                case 14:
+                    bookAndBorrowerList.sendReminder();
+                    break;
+                case 15:
                     System.exit(0);
             }
         }
-
-
     }
-
-
-    //menu.chooseUserMenu();
-
-
 }
 
 
@@ -98,10 +169,7 @@ public class Program {
 
 
 
-    /*
-    public void addBorrower(Borrower borrower){
-        borrowers.add(borrower);
-    }
 
-     */
+
+
 
