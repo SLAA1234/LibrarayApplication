@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.Serializable;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class BookAndBorrowerList implements Serializable {
@@ -34,7 +35,7 @@ public class BookAndBorrowerList implements Serializable {
         borrowerList.add(new Borrower("Alex"));
         borrowerList.add(new Borrower("Allen"));
         borrowerList.add(new Borrower("Alice"));
-        FileUtility.saveObject("TotalBook.ser", this);
+        FileUtility.saveObject("TotalBook.ser", this, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
 
 
@@ -275,7 +276,7 @@ public class BookAndBorrowerList implements Serializable {
         System.out.println("Please enter the description of the new book: ");
         String description =  scanner.nextLine();
         totalBookList.add(new Book(title, author, description));
-        System.out.println("The book" + title.toUpperCase()+ " has been successfully added to the total book list.");
+        System.out.println("The book " + title.toUpperCase()+ " has been successfully added to the total book list.");
     }
 
     public void removeBookFromTotalBookList() {
@@ -382,6 +383,61 @@ public class BookAndBorrowerList implements Serializable {
 
     public void sendReminder() {
     }
+
+    public boolean isAllowedToLogInAsBorrower() {
+
+        System.out.println("Please input your name: ");
+        String bName= scanner.nextLine();
+        for(Borrower borrower: borrowerList){
+            if(bName.equals(borrower.getName())){
+                System.out.println("You have successfully log in.");
+               return true;
+            }
+        }
+        System.out.println("You are not allowed to log in. Register at Reception first to become a member.");
+        System.exit(0);
+        return false;
+    }
+
+    public boolean borrowerLogIn() {
+
+        System.out.println("Please input your name: ");
+        String bName= scanner.nextLine();
+        for(Borrower borrower: borrowerList){
+            if(bName.equals(borrower.getName())){
+                System.out.println("You have successfully log in.");
+                return true;
+            }
+        }
+        System.out.println("You are not allowed to log in as Borrower. Register at Reception first to become a member.");
+        System.exit(0);
+        return false;
+    }
+
+    public boolean AdminLogIn() {
+
+        System.out.println("Please input your name: ");
+        String lName = scanner.nextLine();
+        if (lName.equals("Irene")) {
+            System.out.println("You have successfully log in as an admin.");
+            return true;
+        } else {
+            System.out.println("You are not allowed to log in. You are not the Admin.");
+            System.exit(0);
+            return false;
+        }
+    }
+/*
+    public void borrowerLogIn() {
+        if(isAllowedToLogInAsBorrower()){
+            System.out.println("You have successfully log in.");
+        }else{
+            System.out.println("You are not allowed to log in. Register at Reception first to become a member.");
+            System.exit(0);
+        }
+    }
+
+ */
 
 
 /*

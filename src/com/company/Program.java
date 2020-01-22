@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class Program {
     BookAndBorrowerList bookAndBorrowerList = new BookAndBorrowerList();
     Scanner scanner = new Scanner(System.in);
+    Librarian librarian = new Librarian("Irene");
 
     public void start() {
 
@@ -44,54 +45,59 @@ public class Program {
 
     public void borrowerChoice() {//
         //add a log in method, so can remember user information. fix this.
-        while (true) {
-            System.out.println("Select the menu:  \n 1.Show all the books." +
-                    "\n 2.Show all the books available to borrow" +
-                    "\n 3.Search a book by title. \n 4.Search a book by author." +
-                    "\n 5.Check if a book is available.\n 6.Borrow a book. \n 7.Return a book." +
-                    "\n 8.Show all my loan. \n 9.Show how many days left to due date. \n 10.Exit.");
-            int choice = 999;
-            try {
-                choice = Integer.parseInt(scanner.nextLine());
-            } catch (Exception e) {
-                System.out.println("You must select a number.");
-            }
+        bookAndBorrowerList.borrowerLogIn();
+        //if(bookAndBorrowerList.isAllowedToLogInAsBorrower()) {
+            while (true) {
+                System.out.println("Select the menu:  \n 1.Show all the books." +
+                        "\n 2.Show all the books available to borrow" +
+                        "\n 3.Search a book by title. \n 4.Search a book by author." +
+                        "\n 5.Check if a book is available.\n 6.Borrow a book. \n 7.Return a book." +
+                        "\n 8.Show all my loan. \n 9.Show how many days left to due date. \n 10.Exit.");
+                int choice = 999;
+                try {
+                    choice = Integer.parseInt(scanner.nextLine());
+                } catch (Exception e) {
+                    System.out.println("You must select a number.");
+                }
 
-            switch (choice) {
-                case 1:
-                    bookAndBorrowerList.showTotalBookList();
-                    break;
-                case 2:
-                    bookAndBorrowerList.showRemainBookList();
-                    break;
-                case 3:
-                    bookAndBorrowerList.searchBookByTitle();// search once then break, need while true or continue ask to choose
-                    break;
-                case 4:
-                    bookAndBorrowerList.searchBookByAuthor();
-                    break;
-                case 5:
-                    bookAndBorrowerList.checkBookAvailability();
-                    break;
-                case 6:
-                    bookAndBorrowerList.addLoan();
-                    break;
-                case 7:
-                    bookAndBorrowerList.returnLoan();
-                    break;
-                case 8:
-                    bookAndBorrowerList.showBorrowerLoan();
-                    break;
-                case 9:
-                    bookAndBorrowerList.daysToDueDate();
-                    break;
-                case 10:
-                    System.exit(0);
+                switch (choice) {
+                    case 1:
+                        bookAndBorrowerList.showTotalBookList();
+                        break;
+                    case 2:
+                        bookAndBorrowerList.showRemainBookList();
+                        break;
+                    case 3:
+                        bookAndBorrowerList.searchBookByTitle();// search once then break, need while true or continue ask to choose
+                        break;
+                    case 4:
+                        bookAndBorrowerList.searchBookByAuthor();
+                        break;
+                    case 5:
+                        bookAndBorrowerList.checkBookAvailability();
+                        break;
+                    case 6:
+                        bookAndBorrowerList.addLoan();
+                        break;
+                    case 7:
+                        bookAndBorrowerList.returnLoan();
+                        break;
+                    case 8:
+                        bookAndBorrowerList.showBorrowerLoan();
+                        break;
+                    case 9:
+                        bookAndBorrowerList.daysToDueDate();
+                        break;
+                    case 10:
+                        System.exit(0);
+                }
             }
         }
-    }
+    //}
+
 
     public void librarianChoice() {
+        bookAndBorrowerList.AdminLogIn();
         while (true) {
             System.out.println("Select the menu:  \n 1.Show all the books." +
                     "\n 2.Add a new book to total book list. \n 3.Remove a book from total book list" +
