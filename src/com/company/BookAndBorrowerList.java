@@ -11,7 +11,8 @@ public class BookAndBorrowerList implements Serializable {
     private List<Book> remainBookList = new ArrayList<>();
     private List<Borrower> borrowerList = new ArrayList<>();
     Book book;
-    //private Book book = new Book();
+
+
 
     transient Scanner scanner;
     long serialVersionUID = 1;
@@ -35,6 +36,8 @@ public class BookAndBorrowerList implements Serializable {
         borrowerList.add(new Borrower("Alex"));
         borrowerList.add(new Borrower("Allen"));
         borrowerList.add(new Borrower("Alice"));
+
+
         FileUtility.saveObject("TotalBook.ser", this, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
 
@@ -84,8 +87,6 @@ public class BookAndBorrowerList implements Serializable {
             System.out.println(book);
         }
     }
-
-
 
     public void searchBookByTitle() {
         System.out.println("Please input the title: ");
@@ -153,30 +154,6 @@ public class BookAndBorrowerList implements Serializable {
             System.out.println("Failed to borrow the book.");
         }
     }
-/*
-    public void addLoanToBorrower(){//check all the method, public or private
-        System.out.println("please enter borrower's name");
-        String borrowerName = scanner.nextLine();
-        Borrower borrower = findBorrowerByName(borrowerName);
-        if (borrowerName != null) {
-            addLoan();
-        }
-    }
-
-    private Borrower findBorrowerByName(String nameToSearchFor) {
-        for (Borrower borrower : borrowerList) {
-            if (borrower == null) {
-                continue;
-            }
-            if (nameToSearchFor.equals(borrower.getName())) {
-                return borrower;
-            }
-        }
-        return null;
-    }
-}
-
- */
 
     public void returnLoan(){// when return all books, sth strange shows. need to fix
         System.out.println("Input the title of the book you want to return: ");
@@ -188,14 +165,13 @@ public class BookAndBorrowerList implements Serializable {
             if(bookToSearchFor.equals(book.getTitle())){
                 bookToReturn.add(book);
                 didBorrowTheBook=true;
+                System.out.println("The book " + bookToSearchFor.toUpperCase() + " has been successfully remove from your loan List.");
                 //borrowerLoanList.remove(book);//forloop can't add or remove, for it will change the loop, so this doesn't work
             }
         }
         borrowerLoanList.removeAll(bookToReturn);
-        System.out.println("The book " + bookToSearchFor.toUpperCase() + " has been successfully remove from your loan List.");
         totalLoanList.removeAll(bookToReturn);
         remainBookList.addAll(bookToReturn);
-
 
         if(didBorrowTheBook==false){
             System.out.println("The borrower doesn't borrow this book with title " + bookToSearchFor.toUpperCase() + ". So you can not return this book.");
@@ -204,8 +180,15 @@ public class BookAndBorrowerList implements Serializable {
     }
 
     public void showBorrowerLoan(){
+        boolean didHaveLoan = false;
         for(Book book: borrowerLoanList){
-            System.out.println("Now you have: " + book);
+            if(book!=null){
+                System.out.println("Now you have: " + book);
+                didHaveLoan = true;
+            }
+        }
+        if(didHaveLoan==false){
+            System.out.println("Now you have no Loan.");
         }
     }
 
@@ -331,10 +314,10 @@ public class BookAndBorrowerList implements Serializable {
             if(title.equals(book.getTitle())){
                 bookToRemove.add(book);
                 didExitTheBook=true;
+                System.out.println("The book " + title.toUpperCase() + " has been successfully remove from total book List.");
             }
         }
         totalBookList.removeAll(bookToRemove);
-        System.out.println("The book " + title.toUpperCase() + " has been successfully remove from total book List.");
         remainBookList.removeAll(bookToRemove);
 
 
@@ -384,20 +367,6 @@ public class BookAndBorrowerList implements Serializable {
     public void sendReminder() {
     }
 
-    public boolean isAllowedToLogInAsBorrower() {
-
-        System.out.println("Please input your name: ");
-        String bName= scanner.nextLine();
-        for(Borrower borrower: borrowerList){
-            if(bName.equals(borrower.getName())){
-                System.out.println("You have successfully log in.");
-               return true;
-            }
-        }
-        System.out.println("You are not allowed to log in. Register at Reception first to become a member.");
-        System.exit(0);
-        return false;
-    }
 
     public boolean borrowerLogIn() {
 

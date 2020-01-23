@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Borrower implements Serializable {
-
     private String name;
 
     public Borrower(String name) {
@@ -15,6 +14,7 @@ public class Borrower implements Serializable {
     public String getName() {
         return name;
     }
+
 
     @Override
     public String toString() {
