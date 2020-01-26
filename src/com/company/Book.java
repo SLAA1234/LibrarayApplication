@@ -4,21 +4,26 @@ import java.io.Serializable;
 import java.util.Scanner;
 
 public class Book implements Serializable {
-    public boolean isBookAvailable;// what if book has same name or same author has several books?
+    public boolean available;// what if book has same name or same author has several books?
     private String title;
     private String author;
     private String description;
-   // Scanner scanner = new Scanner(System.in);
+    // Scanner scanner = new Scanner(System.in);
+   // long serialVersionUID = 1;
 
-    public Book(String title, String author, String description) {
+    public Book(String title, String author, String description, boolean available) {
         this.title = title;
         this.author = author;
         this.description = description;
-        this.isBookAvailable = true;
+        this.available = available;
     }
 
-    public Book() {
+    public boolean isAvailable() {
+        return available;
+    }
 
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     public String getTitle() {
@@ -32,14 +37,6 @@ public class Book implements Serializable {
     public String getDescription() {
         return description;
     }
-/*
-    public boolean isBookAvailable() {
-        return true;
-    }
-
- */
-
-
 
     @Override
     public String toString() {
@@ -47,9 +44,5 @@ public class Book implements Serializable {
                 ". Author: " + author +
                 ". Description: " + description + "."
                 ;
-    }
-
-    public boolean isBookAvailable() {
-        return true;
     }
 }
