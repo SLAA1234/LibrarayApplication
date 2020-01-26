@@ -59,7 +59,8 @@ public class Program {
             System.out.println("Select the menu:  \n 1.Show all the books. \n 2.Show all the books available to borrow." +
                     "\n 3.Add a new book. \n 4.Remove a Book.\n 5.Show borrowers." +
                     "\n 6.Show a borrower loan. \n 7.Show all borrowers' loan." +
-                    " \n 8.Search borrower. \n 9.Exit");
+                    " \n 8.Search borrower. \n 9.Add borrower. \n 10.Remove borrower." +
+                    "\n 11.Exit");
             int choice = 999;
             try {
                 choice = Integer.parseInt(scanner.nextLine());
@@ -93,13 +94,40 @@ public class Program {
                     searchBorrower();
                     break;
                 case 9:
+                    addBorrower();
+                    break;
+                case 10:
+                    removeBorrower();
+                    break;
+                case 11:
                     FileUtility.saveObject("TotalBook.ser",totalBookList);
+                    FileUtility.saveObject("Borrowers.ser",borrowers);
                     System.exit(0);
                 default:
-                    System.out.println("You must choose a number between 1-9.");
+                    System.out.println("You must choose a number between 1-11.");
             }
         }
         }
+
+    public void addBorrower(){
+        System.out.println("Please input borrower's name: ");
+        String bName = scanner.nextLine();
+        System.out.println("Please input borrower's id: ");
+        try {
+            int bId = Integer.parseInt(scanner.nextLine());
+            borrowers.add(new Borrower(bName,bId));
+            System.out.println("The borrower with name " + bName.toUpperCase() + " has been successfully added as member.");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void removeBorrower() {
+        Borrower borrowerToRemove = searchBorrower();
+        borrowers.remove(borrowerToRemove);
+
+    }
+
 
     private void showAllBorrowersLoan() {
         for (Borrower borrower: borrowers){

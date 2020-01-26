@@ -14,31 +14,8 @@ public class Librarian extends Person {
 
 /*
 
-    public void showBorrowerList() {
-        for(Borrower borrower: borrowers){
-            System.out.println(borrower);
-        }
-    }
 
 
-
-    public void addBorrower(){
-        borrowers.add(new Borrower(getName(),getId()));
-    }
-
-    public void removeBorrower(Borrower borrower) {
-        System.out.println("Please input borrower's name: ");
-        try {
-            String nameToSearch = scanner.nextLine();
-            if (nameToSearch.equals(borrower.getName())) {
-                borrowers.remove(borrower);
-                System.out.println("The borrower "+ nameToSearch.toUpperCase() + "has been successfully deleted.");
-            }
-
-        } catch (Exception e) {
-            System.out.println("Check you spelling. The is no borrower with this name.");
-        }
-    }
 
     public Borrower checkBorrower(){
 
