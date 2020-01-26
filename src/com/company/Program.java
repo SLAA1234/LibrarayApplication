@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class Program {
@@ -42,12 +43,164 @@ public class Program {
                     }
                     break;
                 case 2:
-                    //librarianLogIn();
+                    Librarian librarian = librarianLogInCheck();
+                    if(librarian!=null){
+                        librarianOperate(librarian);
+                    }
                     break;
                 case 3:
                     System.exit(0);
             }
         }
+    }
+
+    private void librarianOperate(Librarian librarian) {
+        while (true){
+            System.out.println("Select the menu:  \n 1.Show all the books. \n 2.Show all the books available to borrow." +
+                    "\n 3.Add a new book. \n. 4.Remove a Book." +
+                    "\n 5.Show borrower loan.\n 6.Show borrowers." +
+                    " \n 9.Search borrower. \n 10.Exit");
+            int choice = 999;
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+            } catch (Exception e) {
+                System.out.println("You must select a number.");
+            }
+
+            switch (choice) {
+                case 1:
+                    showTotalBookList();
+                    break;
+                case 2:
+                    showRemainBookList();
+                    break;
+                case 3:
+                    addBook();
+                    break;
+                case 4:
+                    removeBook();
+                    break;
+                case 5:
+                    addLoan(activeBorrower);
+                    break;
+                case 6:
+                    returnBook(activeBorrower);
+                    break;
+                case 7:
+                    showBorrowerLoan(activeBorrower);
+                    break;
+                //case 8:
+                //borrower.daysToDueDate();
+                //break;
+                case 9:
+                    FileUtility.saveObject("TotalBook.ser",totalBookList);
+                    FileUtility.saveObject("Borrowers.ser",borrowers);
+                    FileUtility.saveObject("BorrowerLoan.ser",borrowerLoanList);
+                    System.exit(0);
+                default:
+                    System.out.println("You must choose a number between 1-9.");
+            }
+        }
+        }
+
+    private void removeBook() {
+
+        System.out.println("Select from Menu: \n 1.Remove by author. \n 2.Remove by title.");
+        int choice = 999;
+        try {
+            choice = Integer.parseInt((scanner.nextLine()));
+        } catch (Exception e) {
+            System.out.println("You must select a number.");
+        }
+        switch (choice) {
+            case 1:
+                removeByAuthor();
+                break;
+            case 2:
+                removeByTitle();
+                break;
+            default:
+                System.out.println("You must select a number between 1-2.");
+        }
+    }
+
+    private void removeByAuthor() {
+        System.out.println("Please enter the author of the book you want to remove: ");
+        String author = scanner.nextLine();
+        List<Book> bookToRemove = new ArrayList<>();
+        boolean didExitTheBook = false;
+
+        for(Book book: totalBookList){
+            if(author.equals(book.getAuthor())){
+                bookToRemove.add(book);
+                didExitTheBook=true;
+            }
+        }
+        totalBookList.removeAll(bookToRemove);
+        System.out.println("The book with author " + author.toUpperCase() + " has been successfully remove from total book List.");
+
+        if(didExitTheBook==false){
+            System.out.println("The book with author " + author.toUpperCase() + " doesn't exit. So you can not remove this book.");
+        }
+
+    }
+
+    private void removeByTitle(){
+        System.out.println("Please enter the title of the book you want to remove: ");
+        String title = scanner.nextLine();
+        List<Book>bookToRemove = new ArrayList<>();
+        boolean didExitTheBook = false;
+
+        for(Book book: totalBookList){
+            if(title.equals(book.getTitle())){
+                bookToRemove.add(book);
+                didExitTheBook=true;
+                System.out.println("The book " + title.toUpperCase() + " has been successfully remove from total book List.");
+            }
+        }
+        totalBookList.removeAll(bookToRemove);
+
+        if(didExitTheBook==false){
+            System.out.println("The book with title " + title.toUpperCase() + " doesn't exit. So you can not remove this book.");
+        }
+    }
+
+    private void addBook() {
+        System.out.println("Please enter the author of the new book: ");
+        String author = scanner.nextLine();
+        System.out.println("Please enter the title of the new book: ");
+        String title = scanner.nextLine();
+        System.out.println("Please enter the description of the new book: ");
+        String description =  scanner.nextLine();
+        totalBookList.add(new Book(title, author, description, true));
+        System.out.println("The book " + title.toUpperCase()+ " has been successfully added to the total book list.");
+    }
+
+
+
+    private Librarian librarianLogInCheck() {
+        System.out.println("Please input your name: ");
+        try {
+            String checkLName = scanner.nextLine();
+            System.out.println("Please input your id: ");
+            int checkLID = Integer.parseInt(scanner.nextLine());
+            Librarian librarian = checkLibrarian(checkLName,checkLID);
+            if (librarian!=null) {
+                System.out.println("Hi, " + checkLName + ", you are successfully log in.");
+                return librarian;
+            }
+        } catch (Exception e) {
+            System.out.println("You must input a number.");
+        }
+        System.out.println("You are not allowed to log in. You are not the admin.");
+        return null;
+    }
+
+    private Librarian checkLibrarian(String checkLName, int checkLID) {
+        if (librarian.getName().toUpperCase().equals(checkLName.toUpperCase()) && librarian.getId() == checkLID) {
+            return librarian;
+        }
+        return null;
     }
 
 
@@ -63,7 +216,7 @@ public class Program {
                 return borrower;
             }
         } catch (Exception e) {
-            System.out.println("You must select a number.");
+            System.out.println("You must input a number.");
         }
         System.out.println("You are not allowed to log in. Go to reception to register as borrower.");
         return null;

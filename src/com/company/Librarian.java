@@ -14,16 +14,7 @@ public class Librarian extends Person {
 
 
 /*
-    public void addBookToTotalBookList() {
-        System.out.println("Please enter the author of the new book: ");
-        String author = scanner.nextLine();
-        System.out.println("Please enter the title of the new book: ");
-        String title = scanner.nextLine();
-        System.out.println("Please enter the description of the new book: ");
-        String description =  scanner.nextLine();
-        totalBookList.add(new Book(title, author, description, true));
-        System.out.println("The book " + title.toUpperCase()+ " has been successfully added to the total book list.");
-    }
+
 
 
 
