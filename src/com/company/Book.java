@@ -4,12 +4,11 @@ import java.io.Serializable;
 import java.util.Scanner;
 
 public class Book implements Serializable {
-    public boolean available;// what if book has same name or same author has several books?
+    public boolean available;
     private String title;
     private String author;
     private String description;
-    // Scanner scanner = new Scanner(System.in);
-   // long serialVersionUID = 1;
+
 
     public Book(String title, String author, String description, boolean available) {
         this.title = title;
