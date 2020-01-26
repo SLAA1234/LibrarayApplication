@@ -57,9 +57,9 @@ public class Program {
     private void librarianOperate(Librarian librarian) {
         while (true){
             System.out.println("Select the menu:  \n 1.Show all the books. \n 2.Show all the books available to borrow." +
-                    "\n 3.Add a new book. \n. 4.Remove a Book." +
-                    "\n 5.Show borrower loan.\n 6.Show borrowers." +
-                    " \n 9.Search borrower. \n 10.Exit");
+                    "\n 3.Add a new book. \n 4.Remove a Book.\n 5.Show borrowers." +
+                    "\n 6.Show a borrower loan. \n 7.Show all borrowers' loan." +
+                    " \n 8.Search borrower. \n 9.Exit");
             int choice = 999;
             try {
                 choice = Integer.parseInt(scanner.nextLine());
@@ -81,27 +81,59 @@ public class Program {
                     removeBook();
                     break;
                 case 5:
-                    addLoan(activeBorrower);
+                    checkBorrowerList();
                     break;
                 case 6:
-                    returnBook(activeBorrower);
+                    showABorrowerLoan();
                     break;
                 case 7:
-                    showBorrowerLoan(activeBorrower);
+                    showAllBorrowersLoan();
                     break;
-                //case 8:
-                //borrower.daysToDueDate();
-                //break;
+                case 8:
+                    searchBorrower();
+                    break;
                 case 9:
                     FileUtility.saveObject("TotalBook.ser",totalBookList);
-                    FileUtility.saveObject("Borrowers.ser",borrowers);
-                    FileUtility.saveObject("BorrowerLoan.ser",borrowerLoanList);
                     System.exit(0);
                 default:
                     System.out.println("You must choose a number between 1-9.");
             }
         }
         }
+
+    private void showAllBorrowersLoan() {
+        for (Borrower borrower: borrowers){
+            for(Book book: borrowerLoanList){
+                System.out.println(book);
+            }
+        }
+    }
+
+    private void showABorrowerLoan() {
+        Borrower searchBorrower = searchBorrower();
+        showBorrowerLoan(searchBorrower);
+
+    }
+
+    private Borrower searchBorrower() {
+        System.out.println("Please input name: ");
+
+        String nameToSearch = scanner.nextLine();
+        for(Borrower borrower: borrowers){
+            if(nameToSearch.toUpperCase().equals(borrower.getName().toUpperCase())){
+                System.out.println(borrower);
+                return borrower;
+            }
+        }
+        System.out.println("No borrower with this name.");
+        return null;
+    }
+
+    private void checkBorrowerList() {
+        for(Borrower borrower: borrowers){
+            System.out.println(borrower);
+        }
+    }
 
     private void removeBook() {
 
@@ -297,8 +329,7 @@ public class Program {
             borrowerLoanList.add(book);//has problem here
             System.out.println("The book " + book.getTitle().toUpperCase() + " has been successfully added to your loan list.");
             book.setAvailable(false);
-            //showBorrowerLoan();
-        }else {//specify the reason. Is the book not in the library or there is no such a book
+        }else {
             System.out.println("Failed to borrow the book.");
         }
     }
@@ -311,14 +342,6 @@ public class Program {
             System.out.println("The book " + bookToReturn.getTitle().toUpperCase() + " has been successfully remove from your loan List.");
         }
         bookToReturn.setAvailable(true);
-        /*
-        for(Book book: totalBookList) {
-            if (bookToReturn.getTitle().toUpperCase().equals(book.getTitle().toUpperCase())) {
-                book.setAvailable(true);
-            }
-        }
-
-         */
     }
 
     public Book searchBookInBorrowerLoanListByTitle() {
@@ -378,15 +401,10 @@ public class Program {
 
         for(Book book: totalBookList){
             if(titleToSearch.toUpperCase().equals(book.getTitle().toUpperCase())){
-                System.out.println(book);//how to express "There is no book with this title."
-                // didFindBook = true;
+                System.out.println(book);
                 return book;
             }
         }
-
-        //if(didFindBook==false) {
-        //System.out.println("No book with this title.");
-        //}
         System.out.println("No book with this title.");
         return null;
     }
@@ -395,20 +413,14 @@ public class Program {
     public Book searchBookByAuthor() {
         System.out.println("Please input the author: ");
         String authorToSearch = scanner.nextLine();
-        //boolean didFindAuthor = false;
 
         for(Book book: totalBookList){
             if(authorToSearch.toUpperCase().equals(book.getAuthor().toUpperCase())){
-                System.out.println(book);//"There is no book with this author."
-                //didFindAuthor = true;
+                System.out.println(book);
             }
         }
-        //if(didFindAuthor==false){
-        //  System.out.println("No book with this author.");
-        //}
         System.out.println("No book with this author.");
         return null;
-
     }
 
 
@@ -433,8 +445,6 @@ public class Program {
                 break;
         }
     }
-
-
 
     private void showTotalBookList() {
         System.out.println("Select from the menu: \n 1.Show all the books in random order. \n 2.Show books according to name order." +
@@ -511,160 +521,6 @@ public class Program {
         }
     }
 
-
-/*
-    private void showTotalBookList() {
-        for(Book book: totalBookList){
-            System.out.println("");
-        }
-    }
-
- */
-
-
-/*
-    public void borrowerChoice(Borrower borrower){
-            while (true) {
-                System.out.println("Select the menu:  \n 1.Show all the books." +
-                        "\n 2.Show all the books available to borrow" +
-                        "\n 3.Search a book by title. \n 4.Search a book by author." +
-                        "\n 5.Check if a book is available.\n 6.Borrow a book. \n 7.Return a book." +
-                        "\n 8.Show all my loan. \n 9.Show how many days left to due date. \n 10.Exit.");
-                int choice = 999;
-                try {
-                    choice = Integer.parseInt(scanner.nextLine());
-                } catch (Exception e) {
-                    System.out.println("You must select a number.");
-                }
-
-                switch (choice) {
-                    case 1:
-                        person.showTotalBookList();
-                        break;
-                    case 2:
-                        person.showRemainBookList();
-                        break;
-                    case 3:
-                        person.searchBookByTitle();// search once then break, need while true or continue ask to choose
-                        break;
-                    case 4:
-                        person.searchBookByAuthor();
-                        break;
-                    case 5:
-                        person.checkBookAvailability();
-                        break;
-                    case 6:
-                        borrower.addLoan();
-                        break;
-                    case 7:
-                        borrower.returnBook();
-                        break;
-                    case 8:
-                        borrower.showBorrowerLoan();
-                        break;
-                    case 9:
-                        borrower.daysToDueDate();
-                        break;
-                    case 10:
-                        FileUtility.saveObject("TotalBook.ser",totalBookList);
-                        FileUtility.saveObject("Borrowers.ser",borrowers);
-                        System.exit(0);
-                }
-            }
-        }
-
- */
-
-
-
-/*
-    public void librarianChoice() {
-        bookAndBorrowerList.AdminLogIn();
-        while (true) {
-            System.out.println("Select the menu:  \n 1.Show all the books." +
-                    "\n 2.Add a new book to total book list. \n 3.Remove a book from total book list" +
-                    "\n 4.Show all the books available to borrow. \n 5.Check if a book is available." +
-                    "\n 6.Show all the books that lent out. \n 7.Show all the borrowers." +
-                    "\n 8.Search a borrower by name. \n 9.Add a book to a borrower's loan list. " +
-                    "\n 10.Remove a book from a borrower's loan list." +
-                    "\n 11.Show all the books a borrower has lent." +
-                    "\n 12.Show all the borrowers and the books they have borrowed." +
-                    "\n 13.Set length a book can be borrowed." +
-                    "\n 14.Send a reminder to borrower to return book. " +
-                    "\n 15.Exit.");
-            int choice = 999;
-
-            try {
-                choice = Integer.parseInt(scanner.nextLine());
-            } catch (Exception e) {
-                System.out.println("You must select a number.");
-            }
-
-            switch (choice) {
-                case 1:
-                    //FileUtility.loadObject("TotalBook.ser");
-                    bookAndBorrowerList.showTotalBookList();
-                    break;
-                case 2:
-                    bookAndBorrowerList.addBookToTotalBookList();// search once then break, need while true or continue ask to choose
-                    break;
-                case 3:
-                    bookAndBorrowerList.removeBookFromTotalBookList();
-                    break;
-                case 4:
-                    bookAndBorrowerList.showRemainBookList();
-                    break;
-                case 5:
-                    bookAndBorrowerList.checkBookAvailability();
-                    break;
-                case 6:
-                    bookAndBorrowerList.showBorrowerLoan();
-                    break;
-                case 7:
-                    bookAndBorrowerList.showBorrowerList();
-                    break;
-                case 8:
-                    bookAndBorrowerList.searchBorrowerByName();
-                    break;
-                case 9:
-                    bookAndBorrowerList.addBookToBorrowerLoan();
-                    break;
-                case 10:
-                    bookAndBorrowerList.removeBookFromBorrowerLoan();
-                    break;
-                case 11:
-                    bookAndBorrowerList.showBorrowerLoan();
-                    break;
-                case 12:
-                    bookAndBorrowerList.showBorrowersAndTotalLoan();
-                    break;
-                case 13:
-                    bookAndBorrowerList.setLoanPeriod();
-                    break;
-                case 14:
-                    bookAndBorrowerList.sendReminder();
-                    break;
-                case 15:
-                    System.exit(0);
-            }
-        }
-    }
-
-
-    public boolean AdminLogIn() {
-
-        System.out.println("Please input your name: ");
-        String lName = scanner.nextLine();
-        if (lName.equals("Irene")) {
-            System.out.println("You have successfully log in as an admin.");
-            return true;
-        } else {
-            System.out.println("You are not allowed to log in. You are not the Admin.");
-            System.exit(0);
-            return false;
-        }
-
-     */
 
 
 
