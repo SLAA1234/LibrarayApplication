@@ -9,7 +9,6 @@ public class Book implements Serializable {
     private String author;
     private String description;
 
-
     public Book(String title, String author, String description, boolean available) {
         this.title = title;
         this.author = author;

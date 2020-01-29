@@ -12,16 +12,16 @@ import java.util.Scanner;
 
 public class Program {
 
-    private Person person;
     private Borrower activeBorrower;
     private Librarian librarian;
     Scanner scanner = new Scanner(System.in);
     private ArrayList<Borrower> borrowers = new ArrayList<>();
     private ArrayList<Book> totalBookList = new ArrayList<>();
-    private ArrayList<Book> borrowerLoanList = new ArrayList<>();
+    Book book;
+
 
     public void start() throws IOException {
-        loadObjectFiles("TotalBook", "Borrowers","BorrowerLoan");
+        loadObjectFiles("TotalBook", "Borrowers");
         librarian = new Librarian("Megan", 4444);
 
         while (true) {
@@ -36,9 +36,8 @@ public class Program {
 
             switch (choice) {
                 case 1:
-                    Borrower borrower = borrowerLogInCheck();
-                    if(borrower!=null){
-                        activeBorrower = borrower;
+                    activeBorrower = borrowerLogInCheck();
+                    if(activeBorrower!=null){
                         borrowerOperate(activeBorrower);
                     }
                     break;
@@ -60,7 +59,8 @@ public class Program {
                     "\n 3.Add a new book. \n 4.Remove a Book.\n 5.Show borrowers." +
                     "\n 6.Show a borrower loan. \n 7.Show all borrowers' loan." +
                     " \n 8.Search borrower. \n 9.Add borrower. \n 10.Remove borrower." +
-                    "\n 11.Exit");
+                    "\n 11.Add a book to a borrower loan. \n 12.Remove a book from borrower loan. " +
+                    "\n 13.Exit");
             int choice = 999;
             try {
                 choice = Integer.parseInt(scanner.nextLine());
@@ -100,14 +100,50 @@ public class Program {
                     removeBorrower();
                     break;
                 case 11:
+                    addABookToBorrowerLoan();
+                    break;
+                case 12:
+                    removeABookFromBorrowerLoan();
+                    break;
+                case 13:
                     FileUtility.saveObject("TotalBook.ser",totalBookList);
                     FileUtility.saveObject("Borrowers.ser",borrowers);
                     System.exit(0);
                 default:
-                    System.out.println("You must choose a number between 1-11.");
+                    System.out.println("You must choose a number between 1-13.");
             }
         }
+    }
+
+    private void removeABookFromBorrowerLoan() {
+        Borrower borrower = searchBorrower();
+        if(borrower!=null){
+            returnBook(borrower);
         }
+    }
+
+    private void addABookToBorrowerLoan() {
+        Borrower borrower = searchBorrower();
+        if(borrower!=null){
+            addLoan(borrower);
+        }
+    }
+
+
+
+    private void showABorrowerLoan() {
+        Borrower borrower = searchBorrower();
+        if(borrower!=null){
+            borrower.showBorrowerLoans(borrower);
+        }
+    }
+
+    private void showAllBorrowersLoan() {
+        for(Borrower borrower: borrowers){
+            System.out.println(borrower.getName() + "\n");
+            borrower.showBorrowerLoans(borrower);
+        }
+    }
 
     public void addBorrower(){
         System.out.println("Please input borrower's name: ");
@@ -128,20 +164,6 @@ public class Program {
 
     }
 
-
-    private void showAllBorrowersLoan() {
-        for (Borrower borrower: borrowers){
-            for(Book book: borrowerLoanList){
-                System.out.println(book);
-            }
-        }
-    }
-
-    private void showABorrowerLoan() {
-        Borrower searchBorrower = searchBorrower();
-        showBorrowerLoan(searchBorrower);
-
-    }
 
     private Borrower searchBorrower() {
         System.out.println("Please input name: ");
@@ -191,7 +213,7 @@ public class Program {
         boolean didExitTheBook = false;
 
         for(Book book: totalBookList){
-            if(author.equals(book.getAuthor())){
+            if(author.toUpperCase().equals(book.getAuthor().toUpperCase())){
                 bookToRemove.add(book);
                 didExitTheBook=true;
             }
@@ -212,7 +234,7 @@ public class Program {
         boolean didExitTheBook = false;
 
         for(Book book: totalBookList){
-            if(title.equals(book.getTitle())){
+            if(title.toUpperCase().equals(book.getTitle().toUpperCase())){
                 bookToRemove.add(book);
                 didExitTheBook=true;
                 System.out.println("The book " + title.toUpperCase() + " has been successfully remove from total book List.");
@@ -291,11 +313,11 @@ public class Program {
         return null;
     }
 
-    private void borrowerOperate(Borrower borrower) {
+    private void borrowerOperate(Borrower activeBorrower) {
         while (true){
             System.out.println("Select the menu:  \n 1.Show all the books. \n 2.Show all the books available to borrow." +
                     "\n 3.Search book. \n 4.Check if a book is available. \n 5.Borrow Book." +
-                    "\n 6.Return Book. \n 7.Show all my loan.\n 8.Show days to due date. \n 9.Exit");
+                    "\n 6.Return Book. \n 7.Show all my loan.\n 8.Exit");
             int choice = 999;
             try {
                 choice = Integer.parseInt(scanner.nextLine());
@@ -323,65 +345,48 @@ public class Program {
                     returnBook(activeBorrower);
                     break;
                 case 7:
-                    showBorrowerLoan(activeBorrower);
+                    activeBorrower.showBorrowerLoans(activeBorrower);
                     break;
-                //case 8:
-                    //borrower.daysToDueDate();
-                    //break;
-                case 9:
+                case 8:
                     FileUtility.saveObject("TotalBook.ser",totalBookList);
                     FileUtility.saveObject("Borrowers.ser",borrowers);
-                    FileUtility.saveObject("BorrowerLoan.ser",borrowerLoanList);
                     System.exit(0);
                 default:
-                    System.out.println("You must choose a number between 1-9.");
+                    System.out.println("You must choose a number between 1-8.");
             }
         }
     }
 
-    private void showBorrowerLoan(Borrower activeBorrower) {
-
-        for(Book book: borrowerLoanList) {
-            if (book != null) {
-                System.out.println("Now you have: " + book);
+    public void addLoan (Borrower activeBorrower){
+        Book book=checkBookAvailability();
+        if(book!=null) {
+            if (book.isAvailable()) {
+                activeBorrower.borrowerLoanList.add(book);
+                System.out.println("The book " + book.getTitle().toUpperCase() + " has been successfully added to your loan list.");
+                book.setAvailable(false);
             } else {
-                System.out.println("Now you have no Loan.");
+                System.out.println("The book is not available.");
             }
         }
     }
 
-
-    private void addLoan(Borrower activeBorrower) {
-        Book book = checkBookAvailability();
-        if(book!=null){
-            borrowerLoanList.add(book);//has problem here
-            System.out.println("The book " + book.getTitle().toUpperCase() + " has been successfully added to your loan list.");
-            book.setAvailable(false);
-        }else {
-            System.out.println("Failed to borrow the book.");
-        }
-    }
-
-    private void returnBook(Borrower activeBorrower) {
-
-        Book bookToReturn =  searchBookInBorrowerLoanListByTitle();
+    public void returnBook(Borrower activeBorrower) {
+        Book bookToReturn =  searchBookInBorrowerLoanListByTitle(activeBorrower);
         if(bookToReturn!=null) {
-            borrowerLoanList.remove(bookToReturn);
-            System.out.println("The book " + bookToReturn.getTitle().toUpperCase() + " has been successfully remove from your loan List.");
+            activeBorrower.borrowerLoanList.remove(bookToReturn);
+            bookToReturn.setAvailable(true);
+            System.out.println("The book " + bookToReturn.getTitle() + " has been successfully remove from your loan List.");
         }
-        bookToReturn.setAvailable(true);
     }
 
-    public Book searchBookInBorrowerLoanListByTitle() {
-        System.out.println("Please input the title: ");
-        String titleToSearch = scanner.nextLine();
-
-        for(Book book: borrowerLoanList){
-            if(titleToSearch.toUpperCase().equals(book.getTitle().toUpperCase())){
+    private Book searchBookInBorrowerLoanListByTitle(Borrower activeBorrower) {
+        System.out.println("Enter the title of the book: ");
+        String bookToSearch = scanner.nextLine();
+        for(Book book: activeBorrower.borrowerLoanList){
+            if(bookToSearch.toUpperCase().equals(book.getTitle().toUpperCase())){
                 return book;
             }
         }
-        System.out.println("No book with this title in your loan.");
         return null;
     }
 
@@ -389,11 +394,11 @@ public class Program {
         System.out.println("Please input the title: ");
         String titleToSearch = scanner.nextLine();
         for (Book book : totalBookList) {
-            if (titleToSearch.toUpperCase().equals(book.getTitle().toUpperCase())&& book.isAvailable()) {
+            if (titleToSearch.toUpperCase().equals(book.getTitle().toUpperCase()) && book.isAvailable()) {
                 System.out.println("The book is in the library. You can borrow the book.");
                 return book;
             }
-            if(titleToSearch.toUpperCase().equals(book.getTitle().toUpperCase())&& !book.isAvailable()){
+            if(titleToSearch.toUpperCase().equals(book.getTitle().toUpperCase()) && !book.isAvailable()){
                 System.out.println("The book is lent out");
                 return null;
             }
@@ -425,7 +430,6 @@ public class Program {
     public Book searchBookByTitle() {
         System.out.println("Please input the title: ");
         String titleToSearch = scanner.nextLine();
-        //boolean didFindBook = false;
 
         for(Book book: totalBookList){
             if(titleToSearch.toUpperCase().equals(book.getTitle().toUpperCase())){
@@ -433,7 +437,6 @@ public class Program {
                 return book;
             }
         }
-        System.out.println("No book with this title.");
         return null;
     }
 
@@ -447,7 +450,6 @@ public class Program {
                 System.out.println(book);
             }
         }
-        System.out.println("No book with this author.");
         return null;
     }
 
@@ -498,7 +500,6 @@ public class Program {
 
     private void showBooksRandomly() {
         System.out.println("Catalogue\n");
-
         for(Book book: totalBookList){
             System.out.println(book);
         }
@@ -522,7 +523,6 @@ public class Program {
 
     private void showAvailableBooksRandomly() {
         System.out.println("Available Books Catalogue\n");
-
         for (Book book : totalBookList) {
             if (book.isAvailable()) {
                 System.out.println(book);
@@ -549,9 +549,6 @@ public class Program {
         }
     }
 
-
-
-
     public void setBorrowers (ArrayList < Borrower > borrowers) {
         this.borrowers = borrowers;
     }
@@ -560,9 +557,6 @@ public class Program {
         this.totalBookList = totalBookList;
     }
 
-    public void setBorrowerLoanList(ArrayList<Book> borrowerLoanList) {
-        this.borrowerLoanList = borrowerLoanList;
-    }
 
     public void showBorrowerList() {
         for(Borrower borrower: borrowers){
@@ -570,20 +564,20 @@ public class Program {
         }
     }
 
-    private void loadObjectFiles (String fileName1, String fileName2, String fileName3) throws IOException
+    private void loadObjectFiles (String fileName1, String fileName2) throws IOException
 
     {
         fileName1 = fileName1 + ".ser";
         fileName2 = fileName2 + ".ser";
-        fileName3 = fileName3 + ".ser";
+        //fileName3 = fileName3 + ".ser";
         Path path1 = Paths.get(fileName1);
         Path path2 = Paths.get(fileName2);
-        Path path3 = Paths.get(fileName3);
-        if (!Files.exists(path1) && !Files.exists(path2)&& !Files.exists(path3)) {
+        //Path path3 = Paths.get(fileName3);
+        if (!Files.exists(path1) && !Files.exists(path2)) {
 
             Files.createFile(path1);
             Files.createFile(path2);
-            Files.createFile(path3);
+
 
             totalBookList.add(new Book("Where the Crawdads Sing", "Delia Owens", " A murder mystery", true));
             totalBookList.add(new Book("Becoming", "Michelle Obama", " An intimate, powerful, and inspiring memoir ", true));
@@ -598,7 +592,7 @@ public class Program {
 
             FileUtility.saveObject("TotalBook.ser",totalBookList, StandardOpenOption.TRUNCATE_EXISTING);
             FileUtility.saveObject("Borrowers.ser",borrowers,StandardOpenOption.TRUNCATE_EXISTING);
-            FileUtility.saveObject("BorrowerLoan.ser",borrowerLoanList,StandardOpenOption.TRUNCATE_EXISTING);
+            //FileUtility.saveObject("BorrowerLoan.ser",borrowerLoanList,StandardOpenOption.TRUNCATE_EXISTING);
 
 
         } else {
@@ -606,8 +600,8 @@ public class Program {
             setTotalBookList(totalBookList);
             ArrayList<Borrower> borrowers = (ArrayList<Borrower>) FileUtility.loadObject("Borrowers.ser");
             setBorrowers(borrowers);
-            ArrayList<Book> borrowerLoanList = (ArrayList<Book>) FileUtility.loadObject("BorrowerLoan.ser");
-            setBorrowerLoanList(borrowerLoanList);
+            //ArrayList<Book> borrowerLoanList = (ArrayList<Book>) FileUtility.loadObject("BorrowerLoan.ser");
+            //setBorrowerLoanList(borrowerLoanList);
 
         }
     }
