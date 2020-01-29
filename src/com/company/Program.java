@@ -569,10 +569,9 @@ public class Program {
     {
         fileName1 = fileName1 + ".ser";
         fileName2 = fileName2 + ".ser";
-        //fileName3 = fileName3 + ".ser";
         Path path1 = Paths.get(fileName1);
         Path path2 = Paths.get(fileName2);
-        //Path path3 = Paths.get(fileName3);
+        
         if (!Files.exists(path1) && !Files.exists(path2)) {
 
             Files.createFile(path1);
@@ -592,7 +591,6 @@ public class Program {
 
             FileUtility.saveObject("TotalBook.ser",totalBookList, StandardOpenOption.TRUNCATE_EXISTING);
             FileUtility.saveObject("Borrowers.ser",borrowers,StandardOpenOption.TRUNCATE_EXISTING);
-            //FileUtility.saveObject("BorrowerLoan.ser",borrowerLoanList,StandardOpenOption.TRUNCATE_EXISTING);
 
 
         } else {
