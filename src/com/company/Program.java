@@ -333,7 +333,7 @@ public class Program {
                     showRemainBookList();
                     break;
                 case 3:
-                    searchBook();// search once then break, need while true or continue ask to choose
+                    searchBook();
                     break;
                 case 4:
                     checkBookAvailability();
@@ -600,9 +600,6 @@ public class Program {
             setTotalBookList(totalBookList);
             ArrayList<Borrower> borrowers = (ArrayList<Borrower>) FileUtility.loadObject("Borrowers.ser");
             setBorrowers(borrowers);
-            //ArrayList<Book> borrowerLoanList = (ArrayList<Book>) FileUtility.loadObject("BorrowerLoan.ser");
-            //setBorrowerLoanList(borrowerLoanList);
-
         }
     }
 }
